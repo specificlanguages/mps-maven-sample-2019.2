@@ -1,0 +1,9 @@
+.idea/
+*.iml
+target/
+.mps/workspace.xml
+source_gen/
+source_gen.caches/
+classes_gen/
+classes_gen.caches/
+tests_gen/

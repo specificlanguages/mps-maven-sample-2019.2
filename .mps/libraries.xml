@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectLibraryManager">
+    <option name="libraries">
+      <map>
+        <entry key="dependency">
+          <value>
+            <Library>
+              <option name="name" value="dependency" />
+              <option name="path" value="$PROJECT_DIR$/target/dependency" />
+            </Library>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

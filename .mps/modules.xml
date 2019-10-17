@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MPSProject">
+    <projectModules>
+      <modulePath path="$PROJECT_DIR$/languages/theSimplestLanguage/jetbrains.mps.samples.theSimplestLanguage.mpl" folder="" />
+      <modulePath path="$PROJECT_DIR$/solutions/build/build.msd" folder="" />
+      <modulePath path="$PROJECT_DIR$/solutions/jetbrains.mps.samples.theSimplestLanguage.sandbox/jetbrains.mps.samples.theSimplestLanguage.sandbox.msd" folder="" />
+    </projectModules>
+  </component>
+</project>

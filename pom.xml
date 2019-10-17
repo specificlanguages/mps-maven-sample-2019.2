@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.specificlanguages</groupId>
+    <artifactId>mps-maven-sample-2019.2</artifactId>
+    <version>2019.2.0</version>
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.mbeddr</groupId>
+            <artifactId>platform</artifactId>
+            <type>zip</type>
+            <version>2019.2.21924.f206017</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <mps.version>2019.2.3</mps.version>
+        <mps.build.dir>${project.build.directory}/mps-build</mps.build.dir>
+        <mps_home>${project.build.directory}/mps</mps_home>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>unpack-dependencies</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>unpack-mps</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.jetbrains</groupId>
+                                    <artifactId>mps</artifactId>
+                                    <version>${mps.version}</version>
+                                    <type>zip</type>
+                                    <outputDirectory>${mps_home}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>ant-clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo message="Cleaning all generated sources"/>
+                                <delete includeemptydirs="true">
+                                    <fileset dir="${project.basedir}" followsymlinks="false">
+                                        <include name="**/source_gen/**"/>
+                                        <include name="**/source_gen.caches/**"/>
+                                        <include name="**/classes_gen/**"/>
+                                        <include name="**/classes_gen.caches/**"/>
+                                        <include name="**/test_gen/**"/>
+                                        <include name="**/test_gen.caches/**"/>
+                                    </fileset>
+                                </delete>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ant-generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo message="Generating all build scripts"/>
+                                <ant antfile="build/buildAllScripts.xml" target="generate" useNativeBasedir="true">
+                                    <property name="build.dir" location="${mps.build.dir}"/>
+                                </ant>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>ant-package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <echo message="Building the generic distribution"/>
+
+                                <ant antfile="target/generated-ant-scripts/build.xml">
+                                    <target name="generate"/>
+                                    <target name="assemble"/>
+                                    <property name="build.dir" location="${mps.build.dir}"/>
+                                </ant>
+
+                                <echo message="Building the platform-specific distributions"/>
+
+                                <ant antfile="target/generated-ant-scripts/buildDistribution.xml">
+                                    <target name="assemble"/>
+                                    <property name="build.dir" location="${mps.build.dir}"/>
+                                </ant>
+
+                                <attachartifact file="${mps.build.dir}/artifacts/sampleDistribution/mps-maven-sample-192.SNAPSHOT.tar.gz" classifier="linux" type="tgz" />
+                                <attachartifact file="${mps.build.dir}/artifacts/sampleDistribution/mps-maven-sample-192.SNAPSHOT.win.zip" classifier="windows" type="zip" />
+                                <attachartifact file="${mps.build.dir}/artifacts/sampleDistribution/mps-maven-sample-192.SNAPSHOT.macos.zip" classifier="macos" type="zip" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>itemis</id>
+            <url>https://projects.itemis.de/nexus/content/repositories/mbeddr</url>
+        </repository>
+    </repositories>
+</project>
